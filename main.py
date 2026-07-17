@@ -6,6 +6,8 @@ import math
 # Initialize the pygame
 pygame.init()
 
+clock = pygame.time.Clock()
+
 # Create the screen
 screen = pygame.display.set_mode((800, 600))
 
@@ -35,7 +37,7 @@ enemyX_change = []
 enemyY_change = []
 num_of_enemies = 6
 
-enemy_speed = 0.4
+enemy_speed = 4
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load("invader.png"))
     enemyX.append(random.randint(0,736))
@@ -48,7 +50,7 @@ bulletImg = pygame.image.load("bullet.png")
 bulletX = 0
 bulletY = 480
 bulletX_change = 0
-bulletY_change = 4
+bulletY_change = 8
 bullet_state = "ready"
 
 # Score
@@ -101,9 +103,9 @@ while running:
         # If keystroke is pressed check whether its right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                playerX_change = -0.5
+                playerX_change = -5
             if event.key == pygame.K_RIGHT:
-                playerX_change = 0.5
+                playerX_change = 5
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
                     bullet_sound = mixer.Sound("laser.wav")
@@ -142,7 +144,10 @@ while running:
         # Collision
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
-            enemy_speed+=0.01
+            enemy_speed += 0.5
+
+            for j in range(num_of_enemies):
+                enemyX_change[j] = enemy_speed if enemyX_change[j] > 0 else -enemy_speed
             crash_sound = mixer.Sound("explosion.wav")
             crash_sound.play()
             bulletY = 480
@@ -165,5 +170,7 @@ while running:
     player(playerX, playerY)
     show_score(textX, textY)
     pygame.display.update()
+
+    clock.tick(60)
 
 print(enemyImg[0].get_size())
