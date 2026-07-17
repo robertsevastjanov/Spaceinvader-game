@@ -35,12 +35,12 @@ enemyX_change = []
 enemyY_change = []
 num_of_enemies = 6
 
-
+enemy_speed = 0.4
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load("invader.png"))
-    enemyX.append(random.randint(0,800))
-    enemyY.append(random.randint(0,150))
-    enemyX_change.append(4)
+    enemyX.append(random.randint(0,736))
+    enemyY.append(random.randint(0,100))
+    enemyX_change.append(enemy_speed)
     enemyY_change.append(40)
 
 # Bullet
@@ -59,9 +59,16 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 textX = 10
 textY = 10
 
+# Game over
+game = pygame.font.Font('freesansbold.ttf', 64)
+
 def show_score(x, y):
     score = font.render("Score: " + str(score_value), True, (200, 200, 15))
     screen.blit(score, (x, y))
+
+def game_over_text():
+    over_text = game.render("GAME OVER", True, (255, 0, 15))
+    screen.blit(over_text, (200, 250))
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -117,23 +124,32 @@ while running:
 
     # Enemy movement
     for i in range (num_of_enemies):
+
+        #Game over
+        if enemyY[i] > 420:
+            for j in range(num_of_enemies):
+                enemyY[j] = 2000
+            game_over_text()
+            break
+
         enemyX[i] += enemyX_change[i]
-        if enemyX[i] <= -40:
-            enemyX_change[i] = 0.4
+        if enemyX[i] <= 0:
+            enemyX_change[i] = enemy_speed
             enemyY[i] += enemyY_change[i]
-        elif enemyX[i] >= 770:
-            enemyX_change[i] = -0.4
+        elif enemyX[i] >= 736:
+            enemyX_change[i] = -enemy_speed
             enemyY[i] += enemyY_change[i]
         # Collision
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
+            enemy_speed+=0.01
             crash_sound = mixer.Sound("explosion.wav")
             crash_sound.play()
             bulletY = 480
             bullet_state = "ready"
             score_value += 1
-            enemyX[i] = random.randint(0, 800)
-            enemyY[i] = random.randint(0, 150)
+            enemyX[i] = random.randint(0, 736)
+            enemyY[i] = random.randint(0, 100)
 
         enemy(enemyX[i], enemyY[i], i)
 
@@ -150,3 +166,4 @@ while running:
     show_score(textX, textY)
     pygame.display.update()
 
+print(enemyImg[0].get_size())
