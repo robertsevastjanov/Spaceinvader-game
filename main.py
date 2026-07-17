@@ -1,17 +1,22 @@
 import pygame
+from pygame import mixer
 import random
 import math
 
 # Initialize the pygame
 pygame.init()
 
-#create the screen
+# Create the screen
 screen = pygame.display.set_mode((800, 600))
 
-# background
+# Background
 background = pygame.image.load("background.jpeg")
 
-#Title and Icon
+# Background Sound
+mixer.music.load("background.wav")
+mixer.music.play(-1)
+
+# Title and Icon
 pygame.display.set_caption("Space Invader")
 icon = pygame.image.load("launch.png")
 pygame.display.set_icon(icon)
@@ -46,7 +51,7 @@ bulletX_change = 0
 bulletY_change = 4
 bullet_state = "ready"
 
-#Score
+# Score
 
 score_value = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
@@ -75,7 +80,7 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
         return True
     else:
         return False
-#Game Loop
+# Game Loop
 running = True
 while running:
     # RGB = Red, Green, Blue
@@ -86,7 +91,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        #if keystroke is pressed check whether its right or left
+        # If keystroke is pressed check whether its right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 playerX_change = -0.5
@@ -94,9 +99,11 @@ while running:
                 playerX_change = 0.5
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
-
+                    bullet_sound = mixer.Sound("laser.wav")
+                    bullet_sound.play()
                     bulletX = playerX
                     fire_bullet(playerX, bulletY)
+
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -108,7 +115,7 @@ while running:
     elif playerX >= 736:
         playerX = 736
 
-    #Enemy movement
+    # Enemy movement
     for i in range (num_of_enemies):
         enemyX[i] += enemyX_change[i]
         if enemyX[i] <= -40:
@@ -120,6 +127,8 @@ while running:
         # Collision
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
+            crash_sound = mixer.Sound("explosion.wav")
+            crash_sound.play()
             bulletY = 480
             bullet_state = "ready"
             score_value += 1
@@ -128,7 +137,7 @@ while running:
 
         enemy(enemyX[i], enemyY[i], i)
 
-    #Bullet movement
+    # Bullet movement
     if bulletY <= 0:
         bulletY = 480
         bullet_state = "ready"
