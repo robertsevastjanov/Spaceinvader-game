@@ -7,6 +7,9 @@ pygame.init()
 #create the screen
 screen = pygame.display.set_mode((800, 600))
 
+# background
+background = pygame.image.load("background.jpeg")
+
 #Title and Icon
 pygame.display.set_caption("Space Invader")
 icon = pygame.image.load("launch.png")
@@ -22,7 +25,7 @@ playerX_change = 0
 enemyImg = pygame.image.load("invader.png")
 enemyX = random.randint(0,800)
 enemyY = random.randint(0,150)
-enemyX_change = 0.3
+enemyX_change = 4
 enemyY_change = 40
 
 def player(x, y):
@@ -36,6 +39,7 @@ running = True
 while running:
     # RGB = Red, Green, Blue
     screen.fill((15, 30, 200))
+    screen.blit(background, (0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -59,10 +63,10 @@ while running:
 
     enemyX += enemyX_change
     if enemyX <= -40:
-        enemyX_change = 0.3
+        enemyX_change = 4
         enemyY += enemyY_change
     elif enemyX >= 770:
-        enemyX_change = -0.3
+        enemyX_change = -4
         enemyY += enemyY_change
 
     player(playerX, playerY)
