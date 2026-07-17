@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # Initialize the pygame
 pygame.init()
@@ -19,9 +20,10 @@ playerX_change = 0
 
 # Enemy
 enemyImg = pygame.image.load("invader.png")
-enemyX = 370
-enemyY = 50
-enemyX_change = 0
+enemyX = random.randint(0,800)
+enemyY = random.randint(0,150)
+enemyX_change = 0.3
+enemyY_change = 40
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -54,6 +56,15 @@ while running:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
+
+    enemyX += enemyX_change
+    if enemyX <= -40:
+        enemyX_change = 0.3
+        enemyY += enemyY_change
+    elif enemyX >= 770:
+        enemyX_change = -0.3
+        enemyY += enemyY_change
+
     player(playerX, playerY)
     enemy(enemyX, enemyY)
     pygame.display.update()
